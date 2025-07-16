@@ -23,7 +23,8 @@ document.getElementById('noButton').addEventListener('click', function () {
 
 // ✅ Backend request function
 function sendResponse(answer) {
-    fetch('https://forriya-backend.000webhostapp.com/save_response.php', { // ← replace with actual backend URL I give you
+    fetch('http://forriya.lovestoblog.com/save_response.php', {
+ // ← replace with actual backend URL I give you
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
