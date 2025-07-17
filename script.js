@@ -2,7 +2,7 @@
 document.getElementById('yesButton').addEventListener('click', function () {
   alert("Tere saath har lamha khushbu ban jaaye😍, Dil mera bas tera geet hi gungunaaye🥰. Teri muskaan mein meri duniya base😊, Main khush hoon kyunki tu mere paas hamesha rahe❤️.");
 
-  fetch('https://loveform-api.onrender.com/save_response', {
+  fetch('https://loveform-api.riya.repl.co/save_response', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -22,7 +22,7 @@ document.getElementById('noButton').addEventListener('click', function () {
   this.style.left = `${randomX}px`;
   this.style.top = `${randomY}px`;
 
-  fetch('https://loveform-api.onrender.com/save_response', {
+  fetch('https://loveform-api.riya.repl.co/save_response', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
