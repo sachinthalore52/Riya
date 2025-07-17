@@ -2,15 +2,12 @@
 document.getElementById('yesButton').addEventListener('click', function () {
   alert("Tere saath har lamha khushbu ban jaaye😍, Dil mera bas tera geet hi gungunaaye🥰. Teri muskaan mein meri duniya base😊, Main khush hoon kyunki tu mere paas hamesha rahe❤️.");
 
-  const formData = new URLSearchParams();
-  formData.append('response', 'yes');
-
-  fetch('https://loveform-backend.replit.app/save_response.php', {
+  fetch('https://loveform-api.onrender.com/save_response', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/json'
     },
-    body: formData.toString()
+    body: JSON.stringify({ response: 'yes' })
   })
   .then(res => res.text())
   .then(data => console.log("✅ Server response:", data))
@@ -25,15 +22,12 @@ document.getElementById('noButton').addEventListener('click', function () {
   this.style.left = `${randomX}px`;
   this.style.top = `${randomY}px`;
 
-  const formData = new URLSearchParams();
-  formData.append('response', 'no');
-
-  fetch('https://loveform-backend.replit.app/save_response.php', {
+  fetch('https://loveform-api.onrender.com/save_response', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/json'
     },
-    body: formData.toString()
+    body: JSON.stringify({ response: 'no' })
   })
   .then(res => res.text())
   .then(data => console.log("✅ Server response:", data))
