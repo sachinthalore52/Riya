@@ -8,11 +8,9 @@ document.getElementById('yesButton').addEventListener('click', function () {
 // NO Button
 document.getElementById('noButton').addEventListener('click', function () {
     const container = document.querySelector('.container');
-    const containerWidth = container.clientWidth;
-    const containerHeight = container.clientHeight;
 
-    const randomX = Math.random() * (window.innerWidth - 100);
-    const randomY = Math.random() * (window.innerHeight - 100);
+    const randomX = Math.random() * (window.innerWidth - 100); // 100 is button width
+    const randomY = Math.random() * (window.innerHeight - 100); // 100 is button height
 
     this.style.position = 'absolute';
     this.style.left = `${randomX}px`;
@@ -21,10 +19,9 @@ document.getElementById('noButton').addEventListener('click', function () {
     sendResponse('No');
 });
 
-// ✅ Backend request function
+// ✅ Function to send response to backend
 function sendResponse(answer) {
-    fetch('http://forriya.lovestoblog.com/save_response.php', {
- // ← replace with actual backend URL I give you
+    fetch('https://forriya-backend.000webhostapp.com/save_response.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
