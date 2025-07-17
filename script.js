@@ -5,7 +5,7 @@ document.getElementById('yesButton').addEventListener('click', function () {
   const formData = new URLSearchParams();
   formData.append('response', 'yes');
 
-  fetch('https://loveform.replit.app/save_response.php', {
+  fetch('https://loveform-backend.onrender.com/save_response.php', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -28,7 +28,7 @@ document.getElementById('noButton').addEventListener('click', function () {
   const formData = new URLSearchParams();
   formData.append('response', 'no');
 
-  fetch('https://loveform.replit.app/save_response.php', {
+  fetch('https://loveform-backend.onrender.com/save_response.php', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
