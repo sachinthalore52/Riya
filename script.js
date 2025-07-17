@@ -5,9 +5,11 @@ document.getElementById('yesButton').addEventListener('click', function () {
   const formData = new URLSearchParams();
   formData.append('response', 'yes');
 
-  fetch('https://loveform-backend.up.railway.app/save_response.php', {
+  fetch('https://loveform.replit.app/save_response.php', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
     body: formData.toString()
   })
   .then(res => res.text())
@@ -26,9 +28,11 @@ document.getElementById('noButton').addEventListener('click', function () {
   const formData = new URLSearchParams();
   formData.append('response', 'no');
 
-  fetch('https://loveform-backend.up.railway.app/save_response.php', {
+  fetch('https://loveform.replit.app/save_response.php', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
     body: formData.toString()
   })
   .then(res => res.text())
