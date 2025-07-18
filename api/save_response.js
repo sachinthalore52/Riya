@@ -3,11 +3,10 @@ import fetch from 'node-fetch';
 
 function simplifyUserAgent(ua) {
   if (!ua) return 'Unknown Device';
-
   const lowerUA = ua.toLowerCase();
 
-  // Mac detection first (ignore any Android spoof)
-  if (lowerUA.includes('macintosh') || lowerUA.includes('mac os x')) {
+  // Forced Mac detection
+  if (lowerUA.includes('macintosh')) {
     return 'Mac OS - ' + detectBrowser(lowerUA);
   }
 
@@ -16,7 +15,7 @@ function simplifyUserAgent(ua) {
     return 'Windows - ' + detectBrowser(lowerUA);
   }
 
-  // iPhone/iPad detection
+  // iPhone / iPad detection
   if (lowerUA.includes('iphone') || lowerUA.includes('ipad')) {
     return 'iOS - ' + detectBrowser(lowerUA);
   }
@@ -28,7 +27,7 @@ function simplifyUserAgent(ua) {
     return `Android ${version} - ${detectBrowser(lowerUA)}`;
   }
 
-  // Linux or other devices
+  // Linux or others
   if (lowerUA.includes('linux')) {
     return 'Linux - ' + detectBrowser(lowerUA);
   }
