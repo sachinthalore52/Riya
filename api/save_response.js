@@ -2,11 +2,31 @@ import mysql from 'mysql2/promise';
 import fetch from 'node-fetch';
 
 function simplifyUserAgent(ua) {
-  if (!ua) return 'Unknown';
-  const osMatch = ua.match(/\(([^)]+)\)/); // Get content inside parentheses
-  const os = osMatch ? osMatch[1].split(';')[1]?.trim() || osMatch[1] : 'Unknown OS';
-  const browserMatch = ua.match(/(Chrome|Safari|Firefox|Edge)\/[0-9.]+/);
-  const browser = browserMatch ? browserMatch[0] : 'Unknown Browser';
+  if (!ua) return 'Unknown Device';
+
+  ua = ua.toLowerCase();
+
+  let os = 'Unknown OS';
+  let androidVersion = '';
+
+  if (ua.includes('android')) {
+    os = 'Android';
+    const versionMatch = ua.match(/android\s+([\d.]+)/);
+    if (versionMatch) androidVersion = versionMatch[1];
+  } else if (ua.includes('windows')) os = 'Windows';
+  else if (ua.includes('mac os x') || ua.includes('macintosh')) os = 'Mac OS';
+  else if (ua.includes('iphone') || ua.includes('ipad')) os = 'iOS';
+  else if (ua.includes('linux')) os = 'Linux';
+
+  let browser = 'Unknown Browser';
+  if (ua.includes('chrome')) browser = 'Chrome';
+  else if (ua.includes('safari') && !ua.includes('chrome')) browser = 'Safari';
+  else if (ua.includes('firefox')) browser = 'Firefox';
+  else if (ua.includes('edg')) browser = 'Edge';
+
+  if (androidVersion) {
+    return `${os} ${androidVersion} - ${browser}`;
+  }
   return `${os} - ${browser}`;
 }
 
