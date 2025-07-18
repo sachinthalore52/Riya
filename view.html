@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Responses Table</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background: #f4f4f4; }
+  </style>
+</head>
+<body>
+  <h1>Saved Responses</h1>
+  <table id="responsesTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Response</th>
+        <th>IP Address</th>
+        <th>User Agent</th>
+        <th>City</th>
+        <th>Region</th>
+        <th>Country</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    fetch('https://riya-zeta.vercel.app/api/view_responses')
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.querySelector('#responsesTable tbody');
+        data.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${row.id}</td>
+            <td>${row.response}</td>
+            <td>${row.ip_address}</td>
+            <td>${row.user_agent}</td>
+            <td>${row.city}</td>
+            <td>${row.region}</td>
+            <td>${row.country}</td>
+            <td>${row.created_at}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(err => console.error('Error fetching responses:', err));
+  </script>
+</body>
+</html>
