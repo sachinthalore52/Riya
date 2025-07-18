@@ -1,7 +1,6 @@
 import mysql from 'mysql2/promise';
 
 export default async function handler(req, res) {
-  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -12,35 +11,30 @@ export default async function handler(req, res) {
 
   if (req.method === 'POST') {
     try {
-      const { response } = req.body;
-      if (!response) {
-        return res.status(400).send('Invalid input');
-      }
+      const data = req.body;
+      const response = data.response;
 
-      const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-      const userAgent = req.headers['user-agent'] || '';
-
-      // DB connection
+      // Railway DB credentials (apne values yahan dal do)
       const connection = await mysql.createConnection({
-        host: 'sql311.infinityfree.com',
-        user: 'if0_39495117',
-        password: 's9982453356',
-        database: 'if0_39495117_responses_db'
+        host: "centerbeam.proxy.rlwy.net",
+        user: "root",
+        password: "BrEYLiPHKiaXpChPWGzsYqvwpaRgFKUq",  // Railway se jo password mila hai wo
+        database: "railway",
+        port: 22353
       });
 
       await connection.execute(
         'INSERT INTO responses (response, ip_address, user_agent) VALUES (?, ?, ?)',
-        [response, ip, userAgent]
+        [response, req.socket.remoteAddress, req.headers['user-agent']]
       );
 
       await connection.end();
-
-      return res.status(200).send('Response saved!');
-    } catch (err) {
-      console.error('DB Error:', err);
-      return res.status(500).send('Database error');
+      return res.status(200).send("Response saved!");
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send("Database error");
     }
   }
 
-  res.status(405).send('Method not allowed');
+  return res.status(405).send("Method Not Allowed");
 }
