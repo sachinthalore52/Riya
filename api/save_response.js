@@ -6,25 +6,32 @@ function simplifyUserAgent(ua) {
 
   ua = ua.toLowerCase();
 
+  // OS detection
   let os = 'Unknown OS';
   let androidVersion = '';
 
-  if (ua.includes('android')) {
+  if (ua.includes('macintosh') || ua.includes('mac os x')) {
+    os = 'Mac OS';
+  } else if (ua.includes('windows')) {
+    os = 'Windows';
+  } else if (ua.includes('android')) {
     os = 'Android';
     const versionMatch = ua.match(/android\s+([\d.]+)/);
     if (versionMatch) androidVersion = versionMatch[1];
-  } else if (ua.includes('windows')) os = 'Windows';
-  else if (ua.includes('mac os x') || ua.includes('macintosh')) os = 'Mac OS';
-  else if (ua.includes('iphone') || ua.includes('ipad')) os = 'iOS';
-  else if (ua.includes('linux')) os = 'Linux';
+  } else if (ua.includes('iphone') || ua.includes('ipad')) {
+    os = 'iOS';
+  } else if (ua.includes('linux')) {
+    os = 'Linux';
+  }
 
+  // Browser detection
   let browser = 'Unknown Browser';
   if (ua.includes('chrome')) browser = 'Chrome';
   else if (ua.includes('safari') && !ua.includes('chrome')) browser = 'Safari';
   else if (ua.includes('firefox')) browser = 'Firefox';
   else if (ua.includes('edg')) browser = 'Edge';
 
-  if (androidVersion) {
+  if (os === 'Android' && androidVersion) {
     return `${os} ${androidVersion} - ${browser}`;
   }
   return `${os} - ${browser}`;
