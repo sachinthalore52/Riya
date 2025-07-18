@@ -22,7 +22,7 @@
         <th>City</th>
         <th>Region</th>
         <th>Country</th>
-        <th>Timestamp</th>
+        <th>Timestamp (IST)</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -43,7 +43,7 @@
             <td>${row.city}</td>
             <td>${row.region}</td>
             <td>${row.country}</td>
-            <td>${row.created_at}</td>
+            <td>${new Date(row.created_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</td>
           `;
           tbody.appendChild(tr);
         });
