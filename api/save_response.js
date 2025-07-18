@@ -4,37 +4,44 @@ import fetch from 'node-fetch';
 function simplifyUserAgent(ua) {
   if (!ua) return 'Unknown Device';
 
-  ua = ua.toLowerCase();
+  const lowerUA = ua.toLowerCase();
 
-  // OS detection
-  let os = 'Unknown OS';
-  let androidVersion = '';
-
-  if (ua.includes('macintosh') || ua.includes('mac os x')) {
-    os = 'Mac OS';
-  } else if (ua.includes('windows')) {
-    os = 'Windows';
-  } else if (ua.includes('android')) {
-    os = 'Android';
-    const versionMatch = ua.match(/android\s+([\d.]+)/);
-    if (versionMatch) androidVersion = versionMatch[1];
-  } else if (ua.includes('iphone') || ua.includes('ipad')) {
-    os = 'iOS';
-  } else if (ua.includes('linux')) {
-    os = 'Linux';
+  // Mac detection first (ignore any Android spoof)
+  if (lowerUA.includes('macintosh') || lowerUA.includes('mac os x')) {
+    return 'Mac OS - ' + detectBrowser(lowerUA);
   }
 
-  // Browser detection
-  let browser = 'Unknown Browser';
-  if (ua.includes('chrome')) browser = 'Chrome';
-  else if (ua.includes('safari') && !ua.includes('chrome')) browser = 'Safari';
-  else if (ua.includes('firefox')) browser = 'Firefox';
-  else if (ua.includes('edg')) browser = 'Edge';
-
-  if (os === 'Android' && androidVersion) {
-    return `${os} ${androidVersion} - ${browser}`;
+  // Windows detection
+  if (lowerUA.includes('windows')) {
+    return 'Windows - ' + detectBrowser(lowerUA);
   }
-  return `${os} - ${browser}`;
+
+  // iPhone/iPad detection
+  if (lowerUA.includes('iphone') || lowerUA.includes('ipad')) {
+    return 'iOS - ' + detectBrowser(lowerUA);
+  }
+
+  // Android detection with version
+  if (lowerUA.includes('android')) {
+    const versionMatch = lowerUA.match(/android\s+([\d.]+)/);
+    const version = versionMatch ? versionMatch[1] : '';
+    return `Android ${version} - ${detectBrowser(lowerUA)}`;
+  }
+
+  // Linux or other devices
+  if (lowerUA.includes('linux')) {
+    return 'Linux - ' + detectBrowser(lowerUA);
+  }
+
+  return 'Unknown Device - ' + detectBrowser(lowerUA);
+}
+
+function detectBrowser(ua) {
+  if (ua.includes('chrome')) return 'Chrome';
+  if (ua.includes('safari') && !ua.includes('chrome')) return 'Safari';
+  if (ua.includes('firefox')) return 'Firefox';
+  if (ua.includes('edg')) return 'Edge';
+  return 'Unknown Browser';
 }
 
 export default async function handler(req, res) {
