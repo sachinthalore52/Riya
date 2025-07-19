@@ -34,12 +34,17 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     let { response, ip_address, user_agent, city, region, country } = req.body;
 
-    // Simplify User Agent
-    user_agent = simplifyUserAgent(user_agent);
+    // Simplify UA
+    let simplifiedUA = simplifyUserAgent(user_agent);
+
+    // Detect spoofed UA: Android UA on Indian broadband
+    if (simplifiedUA.toLowerCase().includes('android') && country === 'India') {
+      simplifiedUA = 'Mac OS - Chrome (UA spoofed)';
+    }
 
     const { error } = await supabase
       .from('responses')
-      .insert([{ response, ip_address, user_agent, city, region, country }]);
+      .insert([{ response, ip_address, user_agent: simplifiedUA, city, region, country }]);
 
     if (error) {
       console.error(error);
