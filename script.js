@@ -30,6 +30,7 @@ async function sendResponse(answer) {
       response: answer,
       ip_address: locData.ip || 'unknown',
       user_agent: navigator.userAgent || 'unknown',
+      platform: navigator.platform || 'unknown',  // Added platform info
       city: locData.city || '',
       region: locData.region || '',
       country: locData.country_name || ''
@@ -49,7 +50,7 @@ async function sendResponse(answer) {
 }
 
 document.getElementById('yesButton').addEventListener('click', function () {
-  alert('Tere saath har lamha khushbu ban jaaye😍,Dil mera bas tera geet hi gungunaaye🥰. Teri muskaan mein meri duniya base😊,Main khush hoon kyunki tu mere paas hamesha rahe❤️.');
+  alert('Tere saath har lamha khushbu ban jaaye😍, Dil mera bas tera geet hi gungunaaye🥰. Teri muskaan mein meri duniya base😊, Main khush hoon kyunki tu mere paas hamesha rahe❤️.');
   sendResponse('yes');
 });
 
