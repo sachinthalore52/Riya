@@ -1,8 +1,30 @@
-// Function: Collect user details and send to backend
+async function getLocationData() {
+  try {
+    // Primary API
+    const res1 = await fetch('https://ipapi.co/json/');
+    if (res1.ok) return await res1.json();
+
+    // Backup API
+    const res2 = await fetch('https://ipwho.is/');
+    if (res2.ok) {
+      const data = await res2.json();
+      return {
+        ip: data.ip,
+        city: data.city,
+        region: data.region,
+        country_name: data.country
+      };
+    }
+  } catch (err) {
+    console.warn('Location fetch failed:', err.message);
+  }
+  return {}; // fallback empty object
+}
+
 async function sendResponse(answer) {
   try {
-    // Fetch user's IP and location data
-    const locData = await fetch('https://ipapi.co/json/').then(res => res.json());
+    const locData = await getLocationData();
+    console.log('Location Data:', locData);
 
     const payload = {
       response: answer,
@@ -26,15 +48,12 @@ async function sendResponse(answer) {
   }
 }
 
-// Yes button click handler
 document.getElementById('yesButton').addEventListener('click', function () {
   alert('Tere saath har lamha khushbu ban jaaye😍,Dil mera bas tera geet hi gungunaaye🥰. Teri muskaan mein meri duniya base😊,Main khush hoon kyunki tu mere paas hamesha rahe❤️.');
   sendResponse('yes');
 });
 
-// No button click handler (moves around randomly)
 document.getElementById('noButton').addEventListener('click', function () {
-  const container = document.querySelector('.container');
   const randomX = Math.random() * (window.innerWidth - 100);
   const randomY = Math.random() * (window.innerHeight - 100);
 
