@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Responses Table</title>
+  <title>Saved Responses</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -18,7 +18,7 @@
         <th>ID</th>
         <th>Response</th>
         <th>IP Address</th>
-        <th>User Agent (OS + Version + Browser)</th>
+        <th>User Agent</th>
         <th>City</th>
         <th>Region</th>
         <th>Country</th>
@@ -29,9 +29,10 @@
   </table>
 
   <script>
-    fetch('https://riya-zeta.vercel.app/api/view_responses')
-      .then(res => res.json())
-      .then(data => {
+    async function fetchResponses() {
+      try {
+        const res = await fetch('https://riya-zeta.vercel.app/api/view_responses');
+        const data = await res.json();
         const tbody = document.querySelector('#responsesTable tbody');
         tbody.innerHTML = '';
         data.forEach(row => {
@@ -44,12 +45,16 @@
             <td>${row.city}</td>
             <td>${row.region}</td>
             <td>${row.country}</td>
-            <td>${new Date(row.created_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</td>
+            <td>${new Date(row.timestamp).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</td>
           `;
           tbody.appendChild(tr);
         });
-      })
-      .catch(err => console.error('Error fetching responses:', err));
+      } catch (err) {
+        console.error('Error fetching responses:', err);
+      }
+    }
+
+    fetchResponses();
   </script>
 </body>
 </html>
