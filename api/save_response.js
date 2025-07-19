@@ -32,13 +32,12 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   if (req.method === 'POST') {
-    let { response, ip_address, user_agent, city, region, country } = req.body;
+    let { response, ip_address, user_agent, city, region, country, platform } = req.body;
 
-    // Simplify UA
     let simplifiedUA = simplifyUserAgent(user_agent);
 
-    // Detect spoofed UA: Android UA on Indian broadband
-    if (simplifiedUA.toLowerCase().includes('android') && country === 'India') {
+    // Detect spoofed UA: Android UA but platform indicates MacBook
+    if (simplifiedUA.toLowerCase().includes('android') && platform && platform.includes('Mac')) {
       simplifiedUA = 'Mac OS - Chrome (UA spoofed)';
     }
 
