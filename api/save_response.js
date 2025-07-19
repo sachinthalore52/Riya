@@ -1,92 +1,29 @@
-import mysql from 'mysql2/promise';
-import fetch from 'node-fetch';
+import { createClient } from '@supabase/supabase-js';
 
-function simplifyUserAgent(ua) {
-  if (!ua) return 'Unknown Device';
-  const lowerUA = ua.toLowerCase();
-
-  // Forced Mac detection
-  if (lowerUA.includes('macintosh')) {
-    return 'Mac OS - ' + detectBrowser(lowerUA);
-  }
-
-  // Windows detection
-  if (lowerUA.includes('windows')) {
-    return 'Windows - ' + detectBrowser(lowerUA);
-  }
-
-  // iPhone / iPad detection
-  if (lowerUA.includes('iphone') || lowerUA.includes('ipad')) {
-    return 'iOS - ' + detectBrowser(lowerUA);
-  }
-
-  // Android detection with version
-  if (lowerUA.includes('android')) {
-    const versionMatch = lowerUA.match(/android\s+([\d.]+)/);
-    const version = versionMatch ? versionMatch[1] : '';
-    return `Android ${version} - ${detectBrowser(lowerUA)}`;
-  }
-
-  // Linux or others
-  if (lowerUA.includes('linux')) {
-    return 'Linux - ' + detectBrowser(lowerUA);
-  }
-
-  return 'Unknown Device - ' + detectBrowser(lowerUA);
-}
-
-function detectBrowser(ua) {
-  if (ua.includes('chrome')) return 'Chrome';
-  if (ua.includes('safari') && !ua.includes('chrome')) return 'Safari';
-  if (ua.includes('firefox')) return 'Firefox';
-  if (ua.includes('edg')) return 'Edge';
-  return 'Unknown Browser';
-}
+const SUPABASE_URL = 'https://comdfcrvqifcbtntdofs.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNvbWRmY3J2cWlmY2J0bnRkb2ZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NDc1MzAsImV4cCI6MjA2ODUyMzUzMH0.usg1Sp-yMteILv5qwgEd6hsvrZ10TVe42_9-z7tKJaU';
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   if (req.method === 'POST') {
-    try {
-      const { response } = req.body;
-      if (!response) return res.status(400).send('Invalid input');
+    const { response, ip_address, user_agent, city, region, country } = req.body;
 
-      const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-      const userAgent = simplifyUserAgent(req.headers['user-agent']);
+    const { error } = await supabase
+      .from('responses')
+      .insert([{ response, ip_address, user_agent, city, region, country }]);
 
-      let city = '', region = '', country = '';
-      try {
-        const loc = await fetch(`http://ip-api.com/json/${ip}`).then(r => r.json());
-        city = loc.city || '';
-        region = loc.regionName || '';
-        country = loc.country || '';
-      } catch (err) {
-        console.warn('Location fetch failed:', err.message);
-      }
-
-      const connection = await mysql.createConnection({
-        host: 'centerbeam.proxy.rlwy.net',
-        port: 22353,
-        user: 'root',
-        password: 'BrEYLiPHKiaXpChPWGzsYqvwpaRgFKUq',
-        database: 'railway'
-      });
-
-      await connection.execute(
-        'INSERT INTO responses (response, ip_address, user_agent, city, region, country) VALUES (?, ?, ?, ?, ?, ?)',
-        [response, ip, userAgent, city, region, country]
-      );
-
-      await connection.end();
-      return res.status(200).send('Response saved!');
-    } catch (error) {
-      console.error('DB Error:', error.message);
-      return res.status(500).send('Database error');
+    if (error) {
+      console.error(error);
+      return res.status(500).send("Database error");
     }
+
+    return res.status(200).send("Response saved!");
   }
 
   res.status(405).end();
